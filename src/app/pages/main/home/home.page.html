@@ -1,11 +1,70 @@
-<app-header title="Inicio"></app-header>
+<app-header [showMenu]="true" title="Inicio"></app-header>
+
 
 <ion-content>
 
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" >
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!--Productos-->
+  <ion-list *ngIf="!loading">
+    <ion-item-sliding class="Product-item" *ngFor="let p of products">
+      <ion-item>
+        <ion-avatar slot="start">
+          <img [src]="p.image" />
+        </ion-avatar>
+        <ion-label>
+          <div class="name">
+            <strong>{{p.name}}</strong>
+          </div>
+          <div class="data">
+            <strong>Precio: </strong>{{p.price | currency: 'USD'}}
+          </div>
+          <div class="Description">{{p.Description}}</div>
+        </ion-label>
+      </ion-item>
+      <!--Opciones-->
+      <ion-item-options>
+        <!--Editar-->
+        <ion-item-option (click)="addUpdateProduct(p)">
+          <ion-icon class="option-btn" name="create-outline"></ion-icon>
+        </ion-item-option>
+        <!--Eliminar-->
+        <ion-item-option (click)="confirmDeleteProduct(p)" color="danger">
+          <ion-icon class="option-btn" name="trash-outline"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+
+
+    </ion-item-sliding>
+  </ion-list>
+
+  <!--Loading-->
+  <ion-list *ngIf="loading">
+      <ion-item class="Product-item" *ngFor="let p of [1,1,1,1,1,1,1,1,1,1,1,1,1]">
+        <ion-avatar slot="start">
+          <ion-skeleton-text animated style="width: 100%; height: 100%;"></ion-skeleton-text>
+        </ion-avatar>
+        <ion-label>
+          <div><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></div>
+          <div><ion-skeleton-text animated style="width: 30%"></ion-skeleton-text></div>
+        </ion-label>
+      </ion-item>
+  </ion-list>
+
+  <!--No hay Productos Disponibles-->
+  <div *ngIf="!loading && !products.length" class="empty">
+    <ion-icon name="shield-outline"></ion-icon>
+    <h3>No Hay Productos Disponibles</h3>
+  </div>
+
+  <!-- Nuevo Producto -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button>
+    <ion-fab-button (click)="addUpdateProduct()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+  <!--Cerrar Sesión-->
 
 </ion-content>

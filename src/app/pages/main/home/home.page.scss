@@ -1,0 +1,19 @@
+/* Estilos para el contenedor de la lista de productos */
+.product-list {
+    ion-item {
+      /* Aumentar el tamaño de cada elemento de producto */
+      min-height: 120px; /* Cambia el tamaño de acuerdo a tus necesidades */
+    }
+  
+    ion-avatar {
+      /* Aumentar el tamaño del avatar de producto */
+      width: 80px; /* Cambia el tamaño de acuerdo a tus necesidades */
+      height: 80px; /* Cambia el tamaño de acuerdo a tus necesidades */
+    }
+  
+    ion-label {
+      /* Ajustar el espacio entre los elementos de texto */
+      margin-left: 15px; /* Cambia el tamaño de acuerdo a tus necesidades */
+    }
+  }
+  

@@ -3,9 +3,11 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from 'firebase/auth';
 import { User } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { getFirestore, setDoc, doc, getDoc } from '@angular/fire/firestore';
+import { getFirestore, setDoc, doc, getDoc, addDoc, collection, collectionData, query, updateDoc, deleteDoc } from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
-
+import { AngularFireStorage } from '@angular/fire/compat/storage'; 
+import { getStorage, uploadString, ref, getDownloadURL, deleteObject} from "firebase/storage";
+ 
 @Injectable({
   providedIn: 'root'
 })
@@ -13,6 +15,7 @@ export class FirebaseService {
 
   auth = inject(AngularFireAuth);
   firestore = inject(AngularFirestore);
+  storage = inject(AngularFireStorage);
   utilsSvc = inject(UtilsService);
 
   // Autenticacion
@@ -51,10 +54,25 @@ export class FirebaseService {
 
   // Base de Datos <-----
 
+  //Obtener documento de una colección
+  getCollectionData(path: string, collectionQuery?: any){
+    const ref = collection(getFirestore(), path);
+    return collectionData(query(ref, collectionQuery), {idField: 'id'});
+  }
 
   //Setear un documento
   setDocument(path: string, data: any) {
     return setDoc(doc(getFirestore(), path), data);
+  }
+
+  //Actualizar un documento
+  updateDocument(path: string, data: any) {
+    return updateDoc(doc(getFirestore(), path), data);
+  }
+
+  //Eliminar Un Documento
+  deleteDocument(path: string) {
+    return deleteDoc(doc(getFirestore(), path));
   }
 
   //Obtener un Documento
@@ -62,4 +80,29 @@ export class FirebaseService {
     return (await getDoc(doc(getFirestore(), path))).data();
   }
 
+  //Agregar un documento
+  addDocument(path: string = 'users/id_del_usuario/products', data: any) {
+    return addDoc(collection(getFirestore(), path), data);
+  }
+
+  //Almacenamiento --- Storage de firebase
+  
+    //subir imagen
+  async uploadImage(path: string, data_url: string){
+    return uploadString(ref(getStorage(), path), data_url, 'data_url').then(() => {
+      return getDownloadURL(ref(getStorage(), path))
+    })  
+  }
+
+  //Obtener ruta de la imagen con su URL
+  async getFilePath(url: string){
+    return ref(getStorage(), url).fullPath
+  }
+
+
+  //Eliminar Archivos
+
+  deleteFile(path: string){
+    return deleteObject(ref(getStorage(), path))
+  }
 }
